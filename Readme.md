@@ -27,7 +27,7 @@
   
 </div>
 
-# Nobitex.Net a Api Client
+# Nobitex.Net
 
 A lightweight Nobitex API client for .NET 9. Designed for DI-friendly initialization, safe singleton HttpClient usage, and a small sliding-window rate limiter.
 
