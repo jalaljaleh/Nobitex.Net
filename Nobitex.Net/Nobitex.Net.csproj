@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<!-- Package metadata -->
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<PackageId>Nobitex.Net</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>JalalJaleh</Authors>
+		<Company>Halun</Company>
+		<Product>Nobitex Api Client</Product>
+		<Description>A lightweight, dependency-friendly Nobitex API client for .NET 9 with built-in rate-limiter and DI-friendly initialization.</Description>
+		<PackageReleaseNotes>Initial public release</PackageReleaseNotes>
+		<PackageTags>nobitex;crypto;client;http;dotnet;exchange</PackageTags>
+		<RepositoryUrl>https://github.com/jalaljaleh/nobitex.net</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/jalaljaleh/nobitex.net</PackageProjectUrl>
+		<Authors>JalalJaleh</Authors>
+
+		<!-- Optional: include an icon (add icon.png to project root and set its BuildAction to None) -->
+		<PackageIcon>icon.png</PackageIcon>
+
+		<!-- Strongly recommended settings -->
+		<IncludeSymbols>false</IncludeSymbols>
+		<NoWarn>NU5104;NU5128</NoWarn>
+		<NeutralLanguage>en-US</NeutralLanguage>
+
+		<!-- Produce deterministic builds where possible -->
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+		<PackageReference Include="Polly" Version="8.2.0" />
+		<PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
+		<PackageReference Include="System.Text.Json" Version="9.0.10" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
+	</ItemGroup>
+
+	<!-- Optional: include README.md in package -->
+	<ItemGroup>
+		<None Include="icon.png" Pack="true" PackagePath="\" Condition="Exists('icon.png')" />
+	</ItemGroup>
+
+</Project>
