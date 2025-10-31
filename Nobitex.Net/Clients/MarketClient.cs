@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,4 +31,45 @@ public class MarketClient : IMarketClient
         var req = new HttpRequestMessage(HttpMethod.Get, new Uri(new Uri(_opts.BaseUrl), url));
         return _transport.SendAsync<MarketStats>(req, ct)!;
     }
+
+    /// <summary>
+    /// Get supported margin markets and their settings.
+    /// </summary>
+    /// <remarks>
+    /// Endpoint: GET /margin/markets/list
+    /// Rate limit: 30 requests per minute
+    /// Response contains a dictionary keyed by market symbol (e.g., "BTCIRT", "BTCUSDT").
+    /// </remarks>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Deserialized <see cref="MarginMarketsListResponse"/> or null.</returns>
+    public Task<MarginMarketsListResponse?> GetMarginMarketsListAsync(CancellationToken ct = default)
+    {
+        var req = new HttpRequestMessage(HttpMethod.Get, new Uri(new Uri(_opts.BaseUrl), "/margin/markets/list"));
+        return _transport.SendAsync<MarginMarketsListResponse>(req, ct);
+    }
+
+
+    /// <summary>
+    /// Get active liquidity pools (capacity and filledCapacity per currency).
+    /// </summary>
+    /// <remarks>
+    /// Endpoint: GET /liquidity-pools/list
+    /// Rate limit: 12 requests per minute
+    /// Response contains a dictionary keyed by currency symbol (e.g., "btc", "ltc", "doge").
+    /// </remarks>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Deserialized <see cref="LiquidityPoolsListResponse"/> or null.</returns>
+    public Task<LiquidityPoolsListResponse?> GetLiquidityPoolsAsync(CancellationToken ct = default)
+    {
+        var req = new HttpRequestMessage(HttpMethod.Get, new Uri(new Uri(_opts.BaseUrl), "/liquidity-pools/list"));
+        return _transport.SendAsync<LiquidityPoolsListResponse>(req, ct);
+    }
+
+
+    // reuse shared JsonSerializerOptions convention used in other methods (if needed elsewhere)
+    private static readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        PropertyNameCaseInsensitive = true
+    };
 }

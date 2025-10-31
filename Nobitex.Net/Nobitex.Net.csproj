@@ -8,11 +8,11 @@
 		<!-- Package metadata -->
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<PackageId>Nobitex.Net</PackageId>
-		<Version>1.0.0</Version>
+		<Version>1.0.1-beta</Version>
 		<Authors>JalalJaleh</Authors>
 		<Company>Halun</Company>
 		<Product>Nobitex Api Client</Product>
-		<Description>A lightweight, dependency-friendly Nobitex API client for .NET 9 with built-in rate-limiter and DI-friendly initialization.</Description>
+		<Description>A lightweight,\n dependency-friendly Nobitex API client for .NET 9 with built-in rate-limiter and DI-friendly initialization.</Description>
 		<PackageReleaseNotes>Initial public release</PackageReleaseNotes>
 		<PackageTags>nobitex;crypto;client;http;dotnet;exchange</PackageTags>
 		<RepositoryUrl>https://github.com/jalaljaleh/nobitex.net</RepositoryUrl>

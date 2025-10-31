@@ -16,8 +16,8 @@ namespace Nobitex.Net
             try
             {
                 NobitexClient client = new NobitexClient("API_TOKEN");
-                
-
+       
+                //var profile = await client.TradesClient
             }
             catch (Exception ex)
             {

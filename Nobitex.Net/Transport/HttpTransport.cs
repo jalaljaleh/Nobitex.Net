@@ -23,8 +23,13 @@ public class HttpTransport : IHttpTransport
         _httpFactory = httpFactory;
         _logger = logger;
         _policyWrap = policies.PolicyWrap;
-        _jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString
+        };
         _jsonOptions.Converters.Add(new OrderBookEntryConverter());
+
         _opts = opts.Value;
     }
 
