@@ -32,6 +32,37 @@ public class MarketClient : IMarketClient
         return _transport.SendAsync<MarketStats>(req, ct)!;
     }
 
+
+
+    /// <summary>
+    /// Get orderbook for a single market symbol (or "all" for every market).
+    /// </summary>
+    /// <remarks>
+    /// Endpoint: GET /v3/orderbook/{symbol} or /v3/orderbook/all
+    /// Rate limit: 300 requests per minute
+    /// No authentication required.
+    /// </remarks>
+    /// <param name="symbol">Market symbol (e.g., "BTCIRT") or "all".</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Deserialized OrderbookResponse for a single symbol, or Dictionary for "all".</returns>
+    public Task<OrderbookResponse?> GetOrderbookAsync(string symbol, CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(symbol)) throw new ArgumentException("symbol is required.", nameof(symbol));
+        var path = $"/v3/orderbook/{Uri.EscapeDataString(symbol)}";
+        var req = new HttpRequestMessage(HttpMethod.Get, new Uri(new Uri(_opts.BaseUrl), path));
+        return _transport.SendAsync<OrderbookResponse>(req, ct);
+    }
+
+    /// <summary>
+    /// Get orderbooks for all markets (calls GET /v3/orderbook/all).
+    /// </summary>
+    public Task<Dictionary<string, OrderbookSummary>?> GetAllOrderbooksAsync(CancellationToken ct = default)
+    {
+        var req = new HttpRequestMessage(HttpMethod.Get, new Uri(new Uri(_opts.BaseUrl), "/v3/orderbook/all"));
+        return _transport.SendAsync<Dictionary<string, OrderbookSummary>>(req, ct);
+    }
+
+
     /// <summary>
     /// Get supported margin markets and their settings.
     /// </summary>

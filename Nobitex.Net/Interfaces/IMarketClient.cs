@@ -1,3 +1,5 @@
+using System.Reflection;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,6 +11,7 @@ namespace Nobitex.Net
     /// </summary>
     public interface IMarketClient
     {
+       
         /// <summary>
         /// Get market statistics. Optional src/dst currency filters.
         /// Endpoint: GET /market/stats
@@ -18,6 +21,21 @@ namespace Nobitex.Net
         /// <param name="ct">Cancellation token.</param>
         /// <returns>Deserialized <see cref="MarketStats"/>.</returns>
         Task<MarketStats> GetStatsAsync(string? srcCurrency = null, string? dstCurrency = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get orderbook for a single market symbol (or "all" for every market).
+        /// Returns a single-symbol OrderbookResponse when symbol != "all".
+        /// </summary>
+        /// <param name="symbol">Market symbol (e.g., "BTCIRT") or "all".</param>
+        /// <param name="ct">Cancellation token.</param>
+        Task<OrderbookResponse?> GetOrderbookAsync(string symbol, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get orderbooks for all markets (GET /v3/orderbook/all).
+        /// Returns a dictionary mapping symbol -> OrderbookSummary.
+        /// </summary>
+        /// <param name="ct">Cancellation token.</param>
+        Task<Dictionary<string, OrderbookSummary>?> GetAllOrderbooksAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get supported margin markets and their settings.

@@ -35,7 +35,6 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<IHttpTransport, HttpTransport>();
         services.AddSingleton<IMarketClient, MarketClient>();
-        services.AddSingleton<IOrderBookClient, OrderBookClient>();
         services.AddSingleton<ITradesClient, TradesClient>();
         services.AddSingleton<IAccountClient, AccountClient>();
         services.AddSingleton<IWalletClient, WalletClient>();

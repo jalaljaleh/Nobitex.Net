@@ -20,6 +20,36 @@ public record MarketStat(
 public record MarketStats(string Status, IDictionary<string, MarketStat> Stats);
 
 
+/// <summary>
+/// Response for GET /v3/orderbook/{symbol}
+/// </summary>
+public record OrderbookResponse(
+    [property: JsonPropertyName("status")] string? Status,
+    [property: JsonPropertyName("lastUpdate")] long? LastUpdate,
+    [property: JsonPropertyName("lastTradePrice")] string? LastTradePrice,
+    [property: JsonPropertyName("asks")] List<OrderbookLevel>? Asks,
+    [property: JsonPropertyName("bids")] List<OrderbookLevel>? Bids
+);
+
+/// <summary>
+/// Compact level representation used by the API: [ price, amount ] both as strings.
+/// Using a small DTO preserves readability while matching the API shape.
+/// </summary>
+public record OrderbookLevel(
+    [property: JsonPropertyName("0")] string? Price,
+    [property: JsonPropertyName("1")] string? Amount
+);
+
+/// <summary>
+/// Summary object used when calling /v3/orderbook/all (each market maps to this).
+/// </summary>
+public record OrderbookSummary(
+    [property: JsonPropertyName("lastUpdate")] long? LastUpdate,
+    [property: JsonPropertyName("lastTradePrice")] string? LastTradePrice,
+    [property: JsonPropertyName("asks")] List<OrderbookLevel>? Asks,
+    [property: JsonPropertyName("bids")] List<OrderbookLevel>? Bids
+);
+
 
 /// <summary>
 /// Response wrapper for GET /margin/markets/list

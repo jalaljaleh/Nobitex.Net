@@ -23,37 +23,33 @@ namespace Nobitex.Net
         /// Account related endpoints (user profile, wallets, cards, etc.).
         /// Resolved from the internal <see cref="ServiceProvider"/> during construction.
         /// </summary>
-        public readonly Nobitex.Net.IAccountClient AccountClient;
+        public readonly Nobitex.Net.IAccountClient Account;
 
         /// <summary>
         /// Market-related endpoints (market stats, tickers, margin markets).
         /// Resolved from the internal <see cref="ServiceProvider"/> during construction.
         /// </summary>
-        public readonly Nobitex.Net.IMarketClient MarketClient;
+        public readonly Nobitex.Net.IMarketClient Market;
 
-        /// <summary>
-        /// OrderBook related endpoints (order book snapshots / depth).
-        /// Resolved from the internal <see cref="ServiceProvider"/> during construction.
-        /// </summary>
-        public readonly Nobitex.Net.IOrderBookClient OrderBookClient;
 
         /// <summary>
         /// Trade and order management endpoints (place orders, list trades, positions).
         /// Resolved from the internal <see cref="ServiceProvider"/> during construction.
         /// </summary>
-        public readonly Nobitex.Net.ITradesClient TradesClient;
+        public readonly Nobitex.Net.ITradesClient Trade;
 
         /// <summary>
         /// Wallet related endpoints (balances, deposit/withdrawal operations).
         /// Resolved from the internal <see cref="ServiceProvider"/> during construction.
         /// </summary>
-        public readonly Nobitex.Net.IWalletClient WalletClient;
+        public readonly Nobitex.Net.IWalletClient Wallet;
 
         // Backing service provider built during construction. Disposed in Dispose().
         private readonly ServiceProvider? _serviceProvider;
 
         // Tracks whether Dispose() has been called to ensure idempotent disposal.
         private bool _disposed;
+
 
         /// <summary>
         /// Construct a new <see cref="NobitexClient"/> and register the required Nobitex services.
@@ -88,11 +84,10 @@ namespace Nobitex.Net
 
             // Resolve required typed clients from the provider. These throws if registrations are missing,
             // which surfaces configuration issues early (during construction).
-            AccountClient = _serviceProvider.GetRequiredService<Nobitex.Net.IAccountClient>();
-            MarketClient = _serviceProvider.GetRequiredService<Nobitex.Net.IMarketClient>();
-            OrderBookClient = _serviceProvider.GetRequiredService<Nobitex.Net.IOrderBookClient>();
-            TradesClient = _serviceProvider.GetRequiredService<Nobitex.Net.ITradesClient>();
-            WalletClient = _serviceProvider.GetRequiredService<Nobitex.Net.IWalletClient>();
+            Account = _serviceProvider.GetRequiredService<Nobitex.Net.IAccountClient>();
+            Market = _serviceProvider.GetRequiredService<Nobitex.Net.IMarketClient>();
+            Trade = _serviceProvider.GetRequiredService<Nobitex.Net.ITradesClient>();
+            Wallet = _serviceProvider.GetRequiredService<Nobitex.Net.IWalletClient>();
         }
 
         /// <summary>

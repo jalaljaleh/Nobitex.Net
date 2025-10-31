@@ -28,7 +28,7 @@ public class HttpTransport : IHttpTransport
             PropertyNameCaseInsensitive = true,
             NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString
         };
-        _jsonOptions.Converters.Add(new OrderBookEntryConverter());
+        _jsonOptions.Converters.Add(new OrderbookLevelConverter());
 
         _opts = opts.Value;
     }

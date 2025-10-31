@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
@@ -18,102 +19,7 @@ public class WalletClient : IWalletClient
         _opts = opts.Value;
     }
 
-    /// <summary>
-    /// Get the balance for a specific currency wallet.
-    /// </summary>
-    /// <remarks>
-    /// Endpoint: GET /users/wallets/balance?currency={currency}
-    /// Returns current available balance for the requested currency as returned by the API.
-    /// </remarks>
-    /// <param name="currency">Currency code (e.g. "btc", "rls"). This value will be URL-encoded.</param>
-    /// <param name="ct">Cancellation token.</param>
-    /// <returns>Deserialized <see cref="WalletBalanceResponse"/> or null if the transport returns no content.</returns>
-    public Task<WalletBalanceResponse?> GetBalanceAsync(string currency, CancellationToken ct = default)
-    {
-        var req = new HttpRequestMessage(HttpMethod.Get, new Uri(new Uri(_opts.BaseUrl), $"/users/wallets/balance?currency={Uri.EscapeDataString(currency)}"));
-        return _transport.SendAsync<WalletBalanceResponse>(req, ct);
-    }
-
-    /// <summary>
-    /// Get the latest transactions for a specific wallet (paginated).
-    /// </summary>
-    /// <remarks>
-    /// Endpoint: GET /users/wallets/transactions/list
-    /// Query parameters:
-    /// - wallet (int): wallet identifier.
-    /// - page (int): page number (default 1).
-    /// - pageSize (int): items per page (default 50).
-    /// </remarks>
-    /// <param name="walletId">Wallet identifier to query.</param>
-    /// <param name="page">Page number, 1-based.</param>
-    /// <param name="pageSize">Number of items per page.</param>
-    /// <param name="ct">Cancellation token.</param>
-    /// <returns>Deserialized <see cref="WalletTransactionsListResponse"/> containing the page of transactions.</returns>
-    public Task<WalletTransactionsListResponse?> GetLatestWalletTransactionsAsync(int walletId, int page = 1, int pageSize = 50, CancellationToken ct = default)
-    {
-        var req = new HttpRequestMessage(HttpMethod.Get, new Uri(new Uri(_opts.BaseUrl), $"/users/wallets/transactions/list?wallet={walletId}&page={page}&pageSize={pageSize}"));
-        return _transport.SendAsync<WalletTransactionsListResponse>(req, ct);
-    }
-
-    /// <summary>
-    /// Get transactions history for a wallet or currency (paginated).
-    /// </summary>
-    /// <remarks>
-    /// Endpoint: GET /users/transactions-history
-    /// Note: the API uses the query key "wallet" for the wallet identifier or currency string depending on the endpoint usage.
-    /// Query parameters:
-    /// - wallet (string): wallet id or currency identifier used by the API.
-    /// - page (int): page number (default 1).
-    /// - pageSize (int): items per page (default 50).
-    /// </remarks>
-    /// <param name="currency">Wallet id or currency identifier as required by the API (string).</param>
-    /// <param name="page">Page number, 1-based.</param>
-    /// <param name="pageSize">Number of items per page.</param>
-    /// <param name="ct">Cancellation token.</param>
-    /// <returns>Deserialized <see cref="WalletTransactionsHistoryResponse"/> containing the transactions page.</returns>
-    public Task<WalletTransactionsHistoryResponse?> GetWalletTransactionsHistoryAsync(string currency, int page = 1, int pageSize = 50, CancellationToken ct = default)
-    {
-        var req = new HttpRequestMessage(HttpMethod.Get, new Uri(new Uri(_opts.BaseUrl), $"/users/transactions-history?wallet={currency}&page={page}&pageSize={pageSize}"));
-        return _transport.SendAsync<WalletTransactionsHistoryResponse>(req, ct);
-    }
-
-    /// <summary>
-    /// Get deposits for a wallet with optional date filters (paginated).
-    /// </summary>
-    /// <remarks>
-    /// Endpoint: GET /users/wallets/deposits/list
-    /// Query parameters:
-    /// - wallet (int or "all"): wallet identifier, or "all" to fetch across wallets. Default when walletId == 0 is "all".
-    /// - page (int): page number (default 1).
-    /// - pageSize (int): items per page (default 50).
-    /// - from (date, optional): start date filter in yyyy-MM-dd format.
-    /// - to (date, optional): end date filter in yyyy-MM-dd format.
-    /// Dates are only appended to the query if provided.
-    /// </remarks>
-    /// <param name="walletId">Wallet identifier. Use 0 to request "all" wallets.</param>
-    /// <param name="page">Page number, 1-based.</param>
-    /// <param name="pageSize">Number of items per page.</param>
-    /// <param name="from">Optional start date filter (date portion only).</param>
-    /// <param name="to">Optional end date filter (date portion only).</param>
-    /// <param name="ct">Cancellation token.</param>
-    /// <returns>Deserialized <see cref="WalletDepositsListResponse"/> with deposit items and paging info.</returns>
-    public Task<WalletDepositsListResponse?> GetWalletDepositsAsync(int walletId = 0, int page = 1, int pageSize = 50, DateTime? from = null, DateTime? to = null, CancellationToken ct = default)
-    {
-        var q = new List<string> {
-        $"wallet={(walletId == 0 ? "all": Uri.EscapeDataString(walletId.ToString()))}",
-        $"page={Uri.EscapeDataString(page.ToString())}",
-        $"pageSize={Uri.EscapeDataString(pageSize.ToString())}"  };
-
-        if (from.HasValue)
-            q.Add($"from={Uri.EscapeDataString(from.Value.ToString("yyyy-MM-dd"))}");
-        if (to.HasValue)
-            q.Add($"to={Uri.EscapeDataString(to.Value.ToString("yyyy-MM-dd"))}");
-
-        var path = "/users/wallets/deposits/list?" + string.Join("&", q);
-        var req = new HttpRequestMessage(HttpMethod.Get, new Uri(new Uri(_opts.BaseUrl), path));
-        return _transport.SendAsync<WalletDepositsListResponse>(req, ct);
-    }
-
+    // ----- Wallet list / overview -----
 
     /// <summary>
     /// GET /v2/wallets
@@ -139,13 +45,9 @@ public class WalletClient : IWalletClient
     // WalletClient: GET /users/wallets/list
     /// <summary>
     /// Get user's wallets list (detailed).
-    /// </summary>
-    /// <remarks>
     /// Endpoint: GET /users/wallets/list
-    /// Rate limit: 15 requests/minute (same class as other wallet endpoints)
-    /// </remarks>
-    /// <param name="ct">Cancellation token.</param>
-    /// <returns>Deserialized <see cref="WalletsListResponse"/> or null.</returns>
+    /// Rate limit: 15 requests/minute
+    /// </summary>
     public Task<WalletsListResponse?> GetWalletsListAsync(CancellationToken ct = default)
     {
         var req = new HttpRequestMessage(HttpMethod.Get, new Uri(new Uri(_opts.BaseUrl), "/users/wallets/list"));
@@ -153,23 +55,66 @@ public class WalletClient : IWalletClient
     }
 
     /// <summary>
-    /// Transfer funds between spot and margin wallets.
+    /// Get the balance for a specific currency wallet.
+    /// Endpoint: GET /users/wallets/balance?currency={currency}
     /// </summary>
-    /// <remarks>
+    public Task<WalletBalanceResponse?> GetBalanceAsync(string currency, CancellationToken ct = default)
+    {
+        var req = new HttpRequestMessage(HttpMethod.Get, new Uri(new Uri(_opts.BaseUrl), $"/users/wallets/balance?currency={Uri.EscapeDataString(currency)}"));
+        return _transport.SendAsync<WalletBalanceResponse>(req, ct);
+    }
+
+    // ----- Transactions and history -----
+
+    /// <summary>
+    /// Get the latest transactions for a specific wallet (paginated).
+    /// Endpoint: GET /users/wallets/transactions/list
+    /// </summary>
+    public Task<WalletTransactionsListResponse?> GetLatestWalletTransactionsAsync(int walletId, int page = 1, int pageSize = 50, CancellationToken ct = default)
+    {
+        var req = new HttpRequestMessage(HttpMethod.Get, new Uri(new Uri(_opts.BaseUrl), $"/users/wallets/transactions/list?wallet={walletId}&page={page}&pageSize={pageSize}"));
+        return _transport.SendAsync<WalletTransactionsListResponse>(req, ct);
+    }
+
+    /// <summary>
+    /// Get transactions history for a wallet or currency (paginated).
+    /// Endpoint: GET /users/transactions-history
+    /// </summary>
+    public Task<WalletTransactionsHistoryResponse?> GetWalletTransactionsHistoryAsync(string currency, int page = 1, int pageSize = 50, CancellationToken ct = default)
+    {
+        var req = new HttpRequestMessage(HttpMethod.Get, new Uri(new Uri(_opts.BaseUrl), $"/users/transactions-history?wallet={currency}&page={page}&pageSize={pageSize}"));
+        return _transport.SendAsync<WalletTransactionsHistoryResponse>(req, ct);
+    }
+
+    // ----- Deposits -----
+
+    /// <summary>
+    /// Get deposits for a wallet with optional date filters (paginated).
+    /// Endpoint: GET /users/wallets/deposits/list
+    /// </summary>
+    public Task<WalletDepositsListResponse?> GetWalletDepositsAsync(int walletId = 0, int page = 1, int pageSize = 50, DateTime? from = null, DateTime? to = null, CancellationToken ct = default)
+    {
+        var q = new List<string> {
+            $"wallet={(walletId == 0 ? "all": Uri.EscapeDataString(walletId.ToString()))}",
+            $"page={Uri.EscapeDataString(page.ToString())}",
+            $"pageSize={Uri.EscapeDataString(pageSize.ToString())}"  };
+
+        if (from.HasValue)
+            q.Add($"from={Uri.EscapeDataString(from.Value.ToString("yyyy-MM-dd"))}");
+        if (to.HasValue)
+            q.Add($"to={Uri.EscapeDataString(to.Value.ToString("yyyy-MM-dd"))}");
+
+        var path = "/users/wallets/deposits/list?" + string.Join("&", q);
+        var req = new HttpRequestMessage(HttpMethod.Get, new Uri(new Uri(_opts.BaseUrl), path));
+        return _transport.SendAsync<WalletDepositsListResponse>(req, ct);
+    }
+
+    // ----- Transfers between wallets -----
+
+    /// <summary>
+    /// Transfer funds between spot and margin wallets.
     /// Endpoint: POST /wallets/transfer
-    /// Rate limit: 10 requests per minute
-    /// Body:
-    /// - currency (string) required: currency code (e.g., "rls" or "usdt")
-    /// - amount (string) required: monetary amount (use invariant culture or string to preserve precision)
-    /// - src (string) required: "spot" or "margin"
-    /// - dst (string) required: "spot" or "margin"
-    /// src and dst must not be equal.
-    /// </remarks>
-    /// <param name="request">Transfer request payload.</param>
-    /// <param name="ct">Cancellation token.</param>
-    /// <returns>Deserialized <see cref="WalletsTransferResponse"/> or null.</returns>
-    /// <exception cref="ArgumentNullException">If request is null.</exception>
-    /// <exception cref="ArgumentException">If src == dst or required fields are missing.</exception>
+    /// </summary>
     public Task<WalletsTransferResponse?> TransferToMarginAsync(WalletsTransferRequest request, CancellationToken ct = default)
     {
         if (request is null) throw new ArgumentNullException(nameof(request));
@@ -190,19 +135,12 @@ public class WalletClient : IWalletClient
         return _transport.SendAsync<WalletsTransferResponse>(req, ct);
     }
 
+    // ----- Withdrawals -----
+
     /// <summary>
     /// Create a withdrawal request from a user wallet.
-    /// </summary>
-    /// <remarks>
     /// Endpoint: POST /users/wallets/withdraw
-    /// Rate limit: 10 requests per 3 minutes
-    /// If the destination address is not in the user's address book the server requires X-TOTP header (one-time code).
-    /// For BTCLN invoice is required (invoice contains amount & address and supersedes amount/address fields).
-    /// </remarks>
-    /// <param name="request">Withdraw request payload.</param>
-    /// <param name="totp">Optional TOTP code to send in X-TOTP header when required by the server.</param>
-    /// <param name="ct">Cancellation token.</param>
-    /// <returns>Deserialized <see cref="WithdrawResponse"/>.</returns>
+    /// </summary>
     public Task<WithdrawResponse?> CreateWithdrawAsync(WithdrawRequest request, string? totp = null, CancellationToken ct = default)
     {
         if (request is null) throw new ArgumentNullException(nameof(request));
@@ -233,18 +171,8 @@ public class WalletClient : IWalletClient
 
     /// <summary>
     /// Confirm a previously created withdrawal request with an OTP.
-    /// </summary>
-    /// <remarks>
     /// Endpoint: POST /users/wallets/withdraw-confirm
-    /// Rate limit: 30 requests per hour
-    /// Use this when the withdrawal was created and the server sent an OTP (email/SMS).
-    /// For safe/whitelisted targets an OTP may not be required.
-    /// </remarks>
-    /// <param name="request">Withdraw confirmation payload (withdraw id and otp when required).</param>
-    /// <param name="ct">Cancellation token.</param>
-    /// <returns>Deserialized <see cref="WithdrawConfirmResponse"/>.</returns>
-    /// <exception cref="ArgumentNullException">If request is null.</exception>
-    /// <exception cref="ArgumentException">If withdraw id is not positive or otp is invalid when required.</exception>
+    /// </summary>
     public Task<WithdrawConfirmResponse?> ConfirmWithdrawAsync(WithdrawConfirmRequest request, CancellationToken ct = default)
     {
         if (request is null) throw new ArgumentNullException(nameof(request));
@@ -262,20 +190,10 @@ public class WalletClient : IWalletClient
         return _transport.SendAsync<WithdrawConfirmResponse>(req, ct);
     }
 
-
     /// <summary>
     /// Get the user's withdrawal requests (paginated).
-    /// </summary>
-    /// <remarks>
     /// Endpoint: GET /users/wallets/withdraws/list
-    /// Rate limit: 10 requests per 3 minutes (follow server-side limits)
-    /// Default page size: 30 (client-side default)
-    /// Query parameters:
-    /// - page (int) optional, 1-based
-    /// - pageSize (int) optional
-    /// - status (string) optional (e.g., New, Verified, Done, Canceled)
-    /// - fromId (long) optional (alternative to page/pageSize)
-    /// </remarks>
+    /// </summary>
     public Task<WithdrawsListResponse?> GetWithdrawsListAsync(
         int page = 1,
         int pageSize = 30,
@@ -306,15 +224,8 @@ public class WalletClient : IWalletClient
 
     /// <summary>
     /// Get a single withdrawal request by id.
-    /// </summary>
-    /// <remarks>
     /// Endpoint: GET /withdraws/{withdrawId}
-    /// Rate limit: 60 requests per 2 minutes
-    /// </remarks>
-    /// <param name="withdrawId">Withdrawal identifier (required, positive).</param>
-    /// <param name="ct">Cancellation token.</param>
-    /// <returns>Deserialized <see cref="WithdrawGetResponse"/> or null.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">If withdrawId is not positive.</exception>
+    /// </summary>
     public Task<WithdrawGetResponse?> GetWithdrawAsync(long withdrawId, CancellationToken ct = default)
     {
         if (withdrawId <= 0) throw new ArgumentOutOfRangeException(nameof(withdrawId), "withdrawId must be positive.");
@@ -323,8 +234,6 @@ public class WalletClient : IWalletClient
         var req = new HttpRequestMessage(HttpMethod.Get, new Uri(new Uri(_opts.BaseUrl), path));
         return _transport.SendAsync<WithdrawGetResponse>(req, ct);
     }
-
-
 
     private static readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions
     {
