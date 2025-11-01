@@ -19,13 +19,12 @@
   </p>
 </div>
 
-<div align="center">
-  
-  
-[![Profile](https://komarev.com/ghpvc/?username=jalaljaleh-nobitex-net&style=flat-square)](https://discord.gg/x5j4cZtnWR)
-[![Discord](https://discord.com/api/guilds/875716592770637824/widget.png)](https://discord.gg/x5j4cZtnWR)
-  
-</div>
+<p align="center">
+  <a href="https://www.nuget.org/packages/Nobitex.Net/"><img src="https://img.shields.io/nuget/vpre/Nobitex.Net.svg?maxAge=2592000?style=plastic" alt="NuGet"></a>
+  <a href="https://github.com/jalaljaleh-nobitex-net"><img src="https://komarev.com/ghpvc/?username=jalaljaleh-nobitex-net&style=flat-square" alt="Profile"></a>
+  <a href="https://discord.gg/x5j4cZtnWR"><img src="https://discord.com/api/guilds/875716592770637824/widget.png" alt="Discord"></a>
+</p>
+
 
 # Nobitex.Net
 
