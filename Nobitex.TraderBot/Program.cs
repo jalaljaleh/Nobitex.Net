@@ -43,8 +43,8 @@ namespace Nobitex.TraderBot
             Console.WriteLine("Logger started. Press Ctrl+C to stop.");
 
             // start two independent loops with different delays
-            var binanceTask = Task.Run(() => BinanceLoopAsync("DOGEUSDT", 1000, _cts.Token)); // 1s delay
-            var nobitexTask = Task.Run(() => NobitexLoopAsync("DOGEUSDT", 1000, _cts.Token));  // 0.8s delay
+            var binanceTask = Task.Run(() => BinanceLoopAsync("BTCUSDT", 1000, _cts.Token)); // 1s delay
+            var nobitexTask = Task.Run(() => NobitexLoopAsync("BTCUSDT", 1000, _cts.Token));  // 0.8s delay
 
             // wait until cancellation
             await Task.WhenAll(binanceTask, nobitexTask);
