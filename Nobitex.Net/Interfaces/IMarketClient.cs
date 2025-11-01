@@ -11,16 +11,27 @@ namespace Nobitex.Net
     /// </summary>
     public interface IMarketClient
     {
-       
+
         /// <summary>
-        /// Get market statistics. Optional src/dst currency filters.
-        /// Endpoint: GET /market/stats
+        /// Get recent trades for a market symbol.
+        /// Optional filters: from (unix ms), to (unix ms), limit (count).
         /// </summary>
-        /// <param name="srcCurrency">Source currency code (optional).</param>
-        /// <param name="dstCurrency">Destination currency code (optional).</param>
-        /// <param name="ct">Cancellation token.</param>
-        /// <returns>Deserialized <see cref="MarketStats"/>.</returns>
-        Task<MarketStats> GetStatsAsync(string? srcCurrency = null, string? dstCurrency = null, CancellationToken ct = default);
+        Task<TradesHistoryResponse?> GetTradesAsync(string symbol, long? from = null, long? to = null, int? limit = null, CancellationToken ct = default);
+        
+        
+        /// <summary>
+        /// Get market statistics optionally filtered by srcCurrency and/or dstCurrency.
+        /// </summary>
+        Task<MarketStatsResponse?> GetStatsAsync(string? srcCurrency = null, string? dstCurrency = null, CancellationToken ct = default);
+
+
+        /// <summary>
+        /// Get OHLC history (UDF) for a market symbol.
+        /// resolution examples: 1,5,15,30,60,180,240,360,720,D,2D,3D
+        /// from/to are unix seconds. Use countback to request N bars before 'to'.
+        /// </summary>
+        Task<UdfHistoryResponse?> GetUdfHistoryAsync(string symbol, string resolution, long to, long? from = null, int? countback = null, int page = 1, CancellationToken ct = default);
+
 
         /// <summary>
         /// Get orderbook for a single market symbol (or "all" for every market).

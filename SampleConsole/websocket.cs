@@ -9,7 +9,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-internal static class Program
+internal static class websoket
 {
     private static async Task<int> Main(string[] args)
     {

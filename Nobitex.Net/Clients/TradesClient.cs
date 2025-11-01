@@ -20,17 +20,6 @@ public class TradesClient : ITradesClient
         _opts = opts.Value;
     }
 
-    // ----- Market data / simple helpers -----
-
-    public Task<IReadOnlyList<Trade>> GetTradesAsync(string symbol, CancellationToken ct = default)
-    {
-        if (string.IsNullOrWhiteSpace(symbol)) throw new ArgumentNullException(nameof(symbol));
-        var req = new HttpRequestMessage(HttpMethod.Get, new Uri(new Uri(_opts.BaseUrl), $"/v2/trade/history/{Uri.EscapeDataString(symbol)}"));
-        return _transport.SendAsync<IReadOnlyList<Trade>>(req, ct)!;
-    }
-
-    // ----- Spot orders (market/limit/stop/oco) helpers -----
-
     /// <summary>
     /// Place a new market/limit order.
     /// Endpoint: POST /market/orders/add

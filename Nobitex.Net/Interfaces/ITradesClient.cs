@@ -12,15 +12,6 @@ namespace Nobitex.Net
     public interface ITradesClient
     {
         /// <summary>
-        /// Get public trade history for a market symbol.
-        /// Endpoint: GET /v2/trade/history/{symbol}
-        /// </summary>
-        /// <param name="symbol">Market symbol (required).</param>
-        /// <param name="ct">Cancellation token.</param>
-        /// <returns>List of recent trades.</returns>
-        Task<IReadOnlyList<Trade>> GetTradesAsync(string symbol, CancellationToken ct = default);
-
-        /// <summary>
         /// Place a new order (spot).
         /// Endpoint: POST /market/orders/add
         /// </summary>
