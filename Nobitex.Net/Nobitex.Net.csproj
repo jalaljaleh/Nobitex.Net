@@ -1,50 +1,46 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-
-		<!-- Package metadata -->
-		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-		<PackageId>Nobitex.Net</PackageId>
-		<Version>1.0.2-beta</Version>
-		<Authors>JalalJaleh</Authors>
-		<Company>Halun</Company>
-		<Product>Nobitex Api Client</Product>
-		<Description>A lightweight,\n dependency-friendly Nobitex API client for .NET 9 with built-in rate-limiter and DI-friendly initialization.</Description>
-		<PackageReleaseNotes>Initial public release</PackageReleaseNotes>
-		<PackageTags>nobitex;crypto;client;http;dotnet;exchange</PackageTags>
-		<RepositoryUrl>https://github.com/jalaljaleh/nobitex.net</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/jalaljaleh/nobitex.net</PackageProjectUrl>
-		<Authors>JalalJaleh</Authors>
-
-		<!-- Optional: include an icon (add icon.png to project root and set its BuildAction to None) -->
-		<PackageIcon>icon.png</PackageIcon>
-
-		<!-- Strongly recommended settings -->
-		<IncludeSymbols>false</IncludeSymbols>
-		<NoWarn>NU5104;NU5128</NoWarn>
-		<NeutralLanguage>en-US</NeutralLanguage>
-
-		<!-- Produce deterministic builds where possible -->
-		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
-		<PackageReference Include="Polly" Version="8.2.0" />
-		<PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
-		<PackageReference Include="System.Text.Json" Version="9.0.10" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
-	</ItemGroup>
-
-	<!-- Optional: include README.md in package -->
-	<ItemGroup>
-		<None Include="icon.png" Pack="true" PackagePath="\" Condition="Exists('icon.png')" />
-	</ItemGroup>
-
+  <PropertyGroup>
+    <TargetFrameworks>net10.0;</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <RootNamespace>Nobitex.Net</RootNamespace>
+    <AssemblyName>Nobitex.Net</AssemblyName>
+    <!-- NuGet package metadata -->
+    <PackageId>Nobitex.Net</PackageId>
+    <Version>2.0.0</Version>
+    <Authors>Nobitex.Net Contributors</Authors>
+    <Company>Nobitex.Net</Company>
+    <Product>Nobitex.Net</Product>
+    <Description>
+      A complete, modern and fully documented C# client library for the Nobitex cryptocurrency
+      exchange REST API and WebSocket (Centrifugo) streams. Supports trading, order management,
+      wallets, deposits/withdrawals and realtime market data.
+    </Description>
+    <PackageTags>nobitex;crypto;exchange;trading;bot;api;websocket;fintech;iran;bitcoin</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/your-user/Nobitex.Net</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/your-user/Nobitex.Net</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <ProjectGuid>{7191BBFB-1F66-40E7-BEFE-1056A83713FA}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Ed25519 request signing (Nobitex-Key / Nobitex-Signature / Nobitex-Timestamp) -->
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />
+    <!-- Optional structured logging support -->
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
+  </ItemGroup>
 </Project>
