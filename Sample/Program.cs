@@ -1,4 +1,5 @@
 ﻿using Nobitex.Net;
+using Nobitex.Net.Authentication;
 using Nobitex.Net.Models;
 
 namespace Sample
@@ -14,27 +15,28 @@ namespace Sample
 
         async Task MainAsync()
         {
+            var apikey = new NobitexApiKeyCredentials("public-key", "secret-key");
             var options = new NobitexClientOptions
             {
-                ApiToken = Environment.GetEnvironmentVariable("NOBITEX_TOKEN"),  // از پنل نوبیتکس
-                UserAgent = "TraderBot/MyFirstBot",
+                ApiKey = apikey,
+                UserAgent = "TraderBot/Nobitex.Net",
                 EnableClientRateLimiting = true
             };
 
             await using var client = new NobitexClient(options);
 
-            // 1) Market statistics (public - no authentication required)
-            var stats = await client.MarketData.GetMarketStatsAsync(srcCurrency: "btc", dstCurrency: "rls");
-            var btc = stats.Stats["btc-rls"];
-            Console.WriteLine($"BTC best ask: {btc.BestSell:N0} | best bid: {btc.BestBuy:N0} | 24h: {btc.DayChange}%");
+            //// 1) Market statistics (public - no authentication required)
+            //var stats = await client.MarketData.GetMarketStatsAsync(srcCurrency: "btc", dstCurrency: "rls");
+            //var btc = stats.Stats["btc-rls"];
+            //Console.WriteLine($"BTC best ask: {btc.BestSell:N0} | best bid: {btc.BestBuy:N0} | 24h: {btc.DayChange}%");
 
-            // 2) Order book (public)
-            var book = await client.MarketData.GetOrderBookAsync("BTCIRT", size: 50);
-            Console.WriteLine($"Top bid: {book.Bids[0].Price} | Top ask: {book.Asks[0].Price}");
+            //// 2) Order book (public)
+            //var book = await client.MarketData.GetOrderBookAsync("BTCIRT", size: 50);
+            //Console.WriteLine($"Top bid: {book.Bids[0].Price} | Top ask: {book.Asks[0].Price}");
 
-            //// 3) Wallet balance
-            //var balance = await client.Wallet.GetBalanceAsync("rls");
-            //Console.WriteLine($"IRR balance: {balance:N0}");
+            // 3) Wallet balance
+            var balance = await client.Wallet.GetBalanceAsync("gram");
+            Console.WriteLine($"IRR balance: {balance:N0}");
 
             //// 4) Place a limit buy order
             //var request = new PlaceOrderRequest

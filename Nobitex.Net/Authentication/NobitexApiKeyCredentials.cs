@@ -118,10 +118,16 @@ public sealed class NobitexApiKeyCredentials : INobitexRequestSigner
 
         var signature = signer.GenerateSignature();
 
+        // Use URL-safe Base64 encoding as required by Nobitex API
+        var base64Signature = Convert.ToBase64String(signature)
+            .Replace('+', '-')
+            .Replace('/', '_')
+            .TrimEnd('=');
+
         return new NobitexRequestSignature(
             Key: _publicKey,
             Timestamp: timestamp,
-            Signature: Convert.ToBase64String(signature));
+            Signature: base64Signature);
     }
 
     /// <summary>
