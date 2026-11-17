@@ -163,6 +163,7 @@ public sealed class DecimalStringConverter : JsonConverter<decimal>
 /// <summary>
 /// Converts Nobitex unix timestamps expressed in milliseconds
 /// (for example <c>"lastUpdate": 1726651067347</c>) into <see cref="DateTimeOffset"/>.
+/// Also handles ISO 8601 datetime strings (RFC 3339) that may be returned by some API endpoints.
 /// </summary>
 public sealed class UnixMillisecondsDateTimeOffsetConverter : JsonConverter<DateTimeOffset>
 {
@@ -171,14 +172,32 @@ public sealed class UnixMillisecondsDateTimeOffsetConverter : JsonConverter<Date
     /// <inheritdoc />
     public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        long milliseconds = reader.TokenType switch
+        return reader.TokenType switch
         {
-            JsonTokenType.Number => reader.GetInt64(),
-            JsonTokenType.String => long.Parse(reader.GetString()!, System.Globalization.CultureInfo.InvariantCulture),
+            JsonTokenType.Number => Epoch.AddMilliseconds(reader.GetInt64()),
+            JsonTokenType.String => ParseDateTimeString(reader.GetString()!),
             _ => throw new JsonException($"Cannot convert token {reader.TokenType} to DateTimeOffset."),
         };
+    }
 
-        return Epoch.AddMilliseconds(milliseconds);
+    /// <summary>
+    /// Parses a datetime string that may be in Unix milliseconds format or ISO 8601 format.
+    /// </summary>
+    private static DateTimeOffset ParseDateTimeString(string value)
+    {
+        // Try parsing as Unix milliseconds (numeric string)
+        if (long.TryParse(value, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out long milliseconds))
+        {
+            return Epoch.AddMilliseconds(milliseconds);
+        }
+
+        // Try parsing as ISO 8601 datetime string (e.g., "2026-10-22T18:08:41.777026+00:00")
+        if (DateTimeOffset.TryParse(value, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind, out DateTimeOffset dateTime))
+        {
+            return dateTime;
+        }
+
+        throw new JsonException($"Cannot parse '{value}' as a valid timestamp (expected Unix milliseconds or ISO 8601 format).");
     }
 
     /// <inheritdoc />
