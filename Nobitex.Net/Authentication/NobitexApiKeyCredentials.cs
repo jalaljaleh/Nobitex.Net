@@ -63,7 +63,7 @@ public sealed class NobitexApiKeyCredentials : INobitexRequestSigner
             throw new ArgumentException("Private key is required.", nameof(privateKeyBase64));
         }
 
-        var rawPrivateKey = Convert.FromBase64String(privateKeyBase64);
+        var rawPrivateKey = DecodeBase64Url(privateKeyBase64);
 
         if (rawPrivateKey.Length != 32)
         {
@@ -74,6 +74,33 @@ public sealed class NobitexApiKeyCredentials : INobitexRequestSigner
 
         _publicKey = publicKeyBase64.Trim();
         _privateKey = new Ed25519PrivateKeyParameters(rawPrivateKey, 0);
+    }
+
+    private static byte[] DecodeBase64Url(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            throw new ArgumentException("Base64 value is required.", nameof(value));
+
+        value = value.Trim()
+            .Replace('-', '+')
+            .Replace('_', '/');
+
+        // Restore missing Base64 padding.
+        switch (value.Length % 4)
+        {
+            case 0:
+                break;
+            case 2:
+                value += "==";
+                break;
+            case 3:
+                value += "=";
+                break;
+            default:
+                throw new FormatException("Invalid Base64Url length.");
+        }
+
+        return Convert.FromBase64String(value);
     }
 
     /// <summary>
@@ -138,7 +165,7 @@ public sealed class NobitexApiKeyCredentials : INobitexRequestSigner
     /// <returns>Base64 encoded public key.</returns>
     public static string DerivePublicKey(string privateKeyBase64)
     {
-        var raw = Convert.FromBase64String(privateKeyBase64);
+        var raw = DecodeBase64Url(privateKeyBase64);
         var privateKey = new Ed25519PrivateKeyParameters(raw, 0);
         return Convert.ToBase64String(privateKey.GeneratePublicKey().GetEncoded());
     }
