@@ -10,9 +10,9 @@
     <AssemblyName>Nobitex.Net</AssemblyName>
     <!-- NuGet package metadata -->
     <PackageId>Nobitex.Net</PackageId>
-    <Version>2.0.0</Version>
-    <Authors>Nobitex.Net Contributors</Authors>
-    <Company>Nobitex.Net</Company>
+    <Version>1.2.0-beta</Version>
+    <Authors>Mohammad Jalal Jaleh | محمدجلال ژاله</Authors>
+    <Company>Jalal Jaleh</Company>
     <Product>Nobitex.Net</Product>
     <Description>
       A complete, modern and fully documented C# client library for the Nobitex cryptocurrency
@@ -20,15 +20,24 @@
       wallets, deposits/withdrawals and realtime market data.
     </Description>
     <PackageTags>nobitex;crypto;exchange;trading;bot;api;websocket;fintech;iran;bitcoin</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/your-user/Nobitex.Net</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/your-user/Nobitex.Net</RepositoryUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/jalaljaleh/Nobitex.Net</RepositoryUrl>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <ProjectGuid>{7191BBFB-1F66-40E7-BEFE-1056A83713FA}</ProjectGuid>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <Title>Nobitex.Net</Title>
+    <Copyright>Mohammad Jalal Jaleh | محمدجلال ژاله </Copyright>
+    <PackageReleaseNotes>beta</PackageReleaseNotes>
+    <NeutralLanguage>en</NeutralLanguage>
+    <AssemblyVersion></AssemblyVersion>
+    <FileVersion></FileVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <AssemblyTitle>Nobitex.Net</AssemblyTitle>
+    <NuGetAuditLevel>low</NuGetAuditLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
@@ -36,11 +45,27 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+
   <ItemGroup>
     <!-- Ed25519 request signing (Nobitex-Key / Nobitex-Signature / Nobitex-Timestamp) -->
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />
     <!-- Optional structured logging support -->
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="icon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\Readme.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 </Project>
